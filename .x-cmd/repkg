@@ -7,10 +7,10 @@ action_main(){
     x uz "$download_fp"
     x cd "$download_fp"
 
-    local folder;
-
+    local folder
     for folder in pages.*; do
-        x z "$folder.tgz" "$folder"
+        local dstfp="$folder.tgz"
+        [ -f "$dstfp" ] || x z "$dstfp" "$folder"
     done
 }
 
