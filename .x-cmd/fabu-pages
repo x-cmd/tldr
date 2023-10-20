@@ -22,7 +22,7 @@ action_main(){(
     x mkdirp "dist/$version"
 
     local folder;   local dir; dir="$(x wsroot)/dist/$version"
-    for folder in pages.*; do
+    for folder in pages*; do
         local dstfp="${dir}/${folder}.tgz"
         [ -f "$dstfp" ] || {
             # x:info x z "$dstfp" "$folder"
