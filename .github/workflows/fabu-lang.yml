@@ -1,4 +1,4 @@
-name: fabu-lang-release
+name: fabu-lang
 on:
   workflow_dispatch:
   # schedule:
@@ -22,5 +22,5 @@ jobs:
         uses: x-cmd/action@main
         with:
           code: |
-            x ws fabu-lang-release || return
+            x ws fabu-lang || return
 
