@@ -1,0 +1,17 @@
+
+
+action_main(){
+    local download_fp
+    # download ...
+
+    x uz "$download_fp"
+    x cd "$download_fp"
+
+    local folder;
+
+    for folder in pages.*; do
+        x z "$folder.tgz" "$folder"
+    done
+}
+
+action_main "$@"
