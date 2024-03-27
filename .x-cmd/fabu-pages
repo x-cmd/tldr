@@ -38,7 +38,7 @@ action_main(){(
         git add dist
         git status -s
         git commit -m "build: :package: release tldr bundle dsit/$version"
-        xws push
+        x ws push
 
         [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
         x qywx --send --markdown  "### 🔔 x-cmd/tldr dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
