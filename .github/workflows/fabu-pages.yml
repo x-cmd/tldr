@@ -22,5 +22,5 @@ jobs:
         uses: x-cmd/action@main
         with:
           code: |
-            x ws fabu-pages v2.0|| return
+            x ws fabu-pages v2.3 || return
 
