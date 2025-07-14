@@ -21,11 +21,14 @@ action_main(){(
     x cd "$download_fp" || return
 
     local folder;   local dir; dir="$(x wsroot)/dist/$version"
+    local langtxt="$dir/lang.txt"; local lang_name=""
     x rmrf "$dir";   x mkdirp "$dir"
-    for folder in pages*; do
+    for folder in pages.*; do
         local dstfp="${dir}/${folder}.tgz"
         (
             # x:info x z "$dstfp" "$folder"
+            lang_name="${folder#"pages."}"
+            printf "%s\n" "$lang_name" >> "$langtxt"
             x cd  "$folder" || return
             x z "$dstfp" ./ || return
             printf "\n"
@@ -33,7 +36,6 @@ action_main(){(
     done
 
     (
-
         x cd "$(x wsroot)" || return
         git add dist
         git status -s
