@@ -35,7 +35,7 @@ action_main(){(
         )
 
     done
-    ln -sf "$dir/pages.en.tgz" "$dir/pages.tgz" || return
+    cp -rf "$dir/pages.en.tgz" "$dir/pages.tgz" || return
 
     (
         x cd "$(x wsroot)" || return
