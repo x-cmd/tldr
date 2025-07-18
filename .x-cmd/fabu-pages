@@ -33,7 +33,9 @@ action_main(){(
             x z "$dstfp" ./ || return
             printf "\n"
         )
+
     done
+    ln -sf "$dir/pages.en.tgz" "$dir/pages.tgz" || return
 
     (
         x cd "$(x wsroot)" || return
