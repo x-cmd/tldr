@@ -6,8 +6,11 @@ action_main(){(
     (
         cd "$HOME"
 
-        git clone https://github.com/tldr-pages/tldr
+        git clone https://github.com/x-cmd/tldr-pages
         cd tldr
+
+        git merge https://github.com/tldr-pages/tldr    main
+        git push https://github.com/x-cmd/tldr-pages    main
 
         mkdir tmpdir
 
