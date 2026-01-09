@@ -19,12 +19,14 @@ action_main(){(
         x rmrf "$dir";   x mkdirp "$dir"
         for folder in pages.*; do
             local dstfp="${dir}/${folder}.tgz"
+            local dstfp_xz="${dir}/${folder}.tar.xz"
             (
                 # x:info x z "$dstfp" "$folder"
                 lang_name="${folder#"pages."}"
                 printf "%s\n" "$lang_name" >> "$langtxt"
-                x cd  "$folder" || return
-                x z "$dstfp" ./ || return
+                x cd  "$folder"     || return
+                x z "$dstfp"    ./  || return
+                x z "$dstfp_xz" ./  || return
                 printf "\n"
             )
 
