@@ -1,0 +1,51 @@
+# shellcheck shell=dash
+
+action_main(){(
+    x cd "$(x wsroot)" || return
+
+    (
+        cd "$HOME"
+
+        git clone https://github.com/tldr-pages/tldr
+        cd tldr
+
+        mkdir tmpdir
+
+        local folder;   local dir; dir=tmpdir
+        local langtxt="$dir/lang.txt"; local lang_name=""
+        x rmrf "$dir";   x mkdirp "$dir"
+        for folder in pages.*; do
+            local dstfp="${dir}/${folder}.tgz"
+            (
+                # x:info x z "$dstfp" "$folder"
+                lang_name="${folder#"pages."}"
+                printf "%s\n" "$lang_name" >> "$langtxt"
+                x cd  "$folder" || return
+                x z "$dstfp" ./ || return
+                printf "\n"
+            )
+
+        done
+        cp -rf "$dir/pages.en.tgz" "$dir/pages.tgz" || return
+    )
+
+    (
+        git checkout -D nightly
+        git checkout -b --orphan nightly
+        cp $HOME/tldr/tmpdir ./dist
+        git add .
+        git commit -m "Creating nightly release for tldr-pages"
+
+        git push git@gitee.com:x-cmd/tldr   :nightly
+        git push git@gitee.com:x-cmd/tldr    nightly
+
+        git push git@github.com:x-cmd/tldr  :nightly
+        git push git@github.com:x-cmd/tldr   nightly
+
+        [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
+        x qywx send --markdown  "### 🔔 x-cmd/tldr dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
+    )
+
+)}
+
+action_main "$@"
