@@ -1,8 +1,8 @@
 name: fabu-nightly
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '15 5,23 * * *'
+  schedule:
+    - cron: '0 11 * * *'
 
 jobs:
   release-worker:

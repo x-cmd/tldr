@@ -58,7 +58,7 @@ action_main(){(
         git push git@github.com:x-cmd/tldr   nightly
 
         [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
-        x qywx send --markdown  "### 🔔 x-cmd/tldr dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
+        x qywx send --markdown  "### 🔔 x-cmd/tldr nightly dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
     )
 
 )}
