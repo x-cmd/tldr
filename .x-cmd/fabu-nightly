@@ -1,43 +1,52 @@
 # shellcheck shell=dash
 
 action_main(){(
+    local version="v2.3"
     x cd "$(x wsroot)" || return
 
     (
-        cd "$HOME"
 
-        git clone https://github.com/x-cmd/tldr-pages
-        cd tldr
+        [ -d "$HOME/tldr-pages" ] || git clone https://github.com/x-cmd/tldr-pages "$HOME/tldr-pages" || {
+            x:error "Fail to clone x-cmd/tldr-pages repo to tldr-pages"
+            return 1
+        }
+        cd "$HOME/tldr-pages" || return
 
-        git merge https://github.com/tldr-pages/tldr    main
-        git push https://github.com/x-cmd/tldr-pages    main
+        x:info "Update x-cmd/tldr-pages from upstream repo"
+        git remote add upstream https://github.com/tldr-pages/tldr.git
+        git fetch upstream
+        git merge upstream/main    || {
+            x:error "Fail to merge from tldr-pages/tldr main branch"
+            return 1
+        }
 
-        mkdir tmpdir
+        git push git@github.com:x-cmd/tldr-pages    main    || {
+            x:error "Fail to push to x-cmd/tldr-pages main branch"
+            return 1
+        }
 
-        local folder;   local dir; dir=tmpdir
+
+        local folder;   local dir="$HOME/tldr-pages/tmpdir"; local dstfp_xz
         local langtxt="$dir/lang.txt"; local lang_name=""
         x rmrf "$dir";   x mkdirp "$dir"
         for folder in pages.*; do
-            local dstfp="${dir}/${folder}.tgz"
-            local dstfp_xz="${dir}/${folder}.tar.xz"
+            dstfp_xz="${dir}/${folder}.tar.xz"
             (
-                # x:info x z "$dstfp" "$folder"
+                x:info x z "$dstfp_xz" "$folder"
                 lang_name="${folder#"pages."}"
                 printf "%s\n" "$lang_name" >> "$langtxt"
                 x cd  "$folder"     || return
-                x z "$dstfp"    ./  || return
                 x z "$dstfp_xz" ./  || return
                 printf "\n"
             )
 
         done
-        cp -rf "$dir/pages.en.tgz" "$dir/pages.tgz" || return
     )
 
     (
         git checkout -D nightly
         git checkout -b --orphan nightly
-        cp $HOME/tldr/tmpdir ./dist
+        cp "$HOME/tldr-pages/tmpdir" ./dist/"$version"
         git add .
         git commit -m "Creating nightly release for tldr-pages"
 
