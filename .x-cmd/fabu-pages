@@ -5,7 +5,6 @@ action_main(){(
     local version="${1:?Provide tldr pages version}"
     local download_fp="tldr-${version#v}"
     [ -d "$download_fp" ] || {
-
         local cache="${version}.tar.gz"
         local url="https://github.com/tldr-pages/tldr/archive/refs/tags/${cache}"
         x:info "Download $cache from $url"
