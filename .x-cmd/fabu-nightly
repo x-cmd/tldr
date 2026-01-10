@@ -44,9 +44,10 @@ action_main(){(
     )
 
     (
-        git checkout -D nightly
-        git checkout -b --orphan nightly
-        cp "$HOME/tldr-pages/tmpdir" ./dist/"$version"
+        git branch -D nightly
+        git checkout --orphan nightly
+        x rmrf "./dist/nightly/$version"
+        x mv -f "$HOME/tldr-pages/tmpdir" "./dist/nightly/$version"
         git add .
         git commit -m "Creating nightly release for tldr-pages"
 
