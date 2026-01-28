@@ -1,0 +1,66 @@
+# shellcheck shell=dash
+
+action_main(){(
+    local version="v2.3"
+    x cd "$(x wsroot)" || return
+
+    (
+
+        [ -d "$HOME/tldr-pages" ] || git clone https://github.com/x-cmd/tldr-pages "$HOME/tldr-pages" || {
+            x:error "Fail to clone x-cmd/tldr-pages repo to tldr-pages"
+            return 1
+        }
+        cd "$HOME/tldr-pages" || return
+
+        x:info "Update x-cmd/tldr-pages from upstream repo"
+        git remote add upstream https://github.com/tldr-pages/tldr.git
+        git fetch upstream
+        git merge upstream/main    || {
+            x:error "Fail to merge from tldr-pages/tldr main branch"
+            return 1
+        }
+
+        git push git@github.com:x-cmd/tldr-pages    main    || {
+            x:error "Fail to push to x-cmd/tldr-pages main branch"
+            return 1
+        }
+
+
+        local folder;   local dir="$HOME/tldr-pages/tmpdir"; local dstfp_xz
+        local langtxt="$dir/lang.txt"; local lang_name=""
+        x rmrf "$dir";   x mkdirp "$dir"
+        for folder in pages.*; do
+            dstfp_xz="${dir}/${folder}.tar.xz"
+            (
+                x:info x z "$dstfp_xz" "$folder"
+                lang_name="${folder#"pages."}"
+                printf "%s\n" "$lang_name" >> "$langtxt"
+                x cd  "$folder"     || return
+                x z "$dstfp_xz" ./  || return
+                printf "\n"
+            )
+
+        done
+    )
+
+    (
+        git branch -D nightly
+        git checkout --orphan nightly
+        x rmrf "./dist/$version"
+        x mv -f "$HOME/tldr-pages/tmpdir" "./dist/$version"
+        git add .
+        git commit -m "Creating nightly release for tldr-pages"
+
+        git push git@gitee.com:x-cmd/tldr   :nightly
+        git push git@gitee.com:x-cmd/tldr    nightly
+
+        git push git@github.com:x-cmd/tldr  :nightly
+        git push git@github.com:x-cmd/tldr   nightly
+
+        [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
+        x qywx send --markdown  "### 🔔 x-cmd/tldr nightly dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
+    )
+
+)}
+
+action_main "$@"
