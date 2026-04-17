@@ -29,6 +29,7 @@ action_main(){(
         local folder;   local dir="$HOME/tldr-pages/tmpdir"; local dstfp_xz
         local langtxt="$dir/lang.txt"; local lang_name=""
         x rmrf "$dir";   x mkdirp "$dir"
+        x log +zuz +p7zip
         for folder in pages.*; do
             dstfp_xz="${dir}/${folder}.tar.xz"
             (
