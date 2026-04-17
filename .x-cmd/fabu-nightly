@@ -33,7 +33,6 @@ action_main(){(
         for folder in pages.*; do
             dstfp_xz="${dir}/${folder}.tar.xz"
             (
-                x:info x z "$dstfp_xz" "$folder"
                 lang_name="${folder#"pages."}"
                 printf "%s\n" "$lang_name" >> "$langtxt"
                 LC_ALL=C command tar -cJf "$dstfp_xz" -C "$folder" . || return 1
@@ -57,8 +56,8 @@ action_main(){(
         git push git@github.com:x-cmd/tldr  :nightly
         git push git@github.com:x-cmd/tldr   nightly
 
-        # [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
-        # x qywx send --markdown  "### 🔔 x-cmd/tldr nightly dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
+        [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
+        x qywx send --markdown  "### 🔔 x-cmd/tldr nightly dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
     )
 
 )}
