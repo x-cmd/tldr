@@ -45,23 +45,23 @@ action_main(){(
         done
     )
 
-    # (
-    #     git branch -D nightly
-    #     git checkout --orphan nightly
-    #     x rmrf "./dist/$version"
-    #     x mv -f "$HOME/tldr-pages/tmpdir" "./dist/$version"
-    #     git add .
-    #     git commit -m "Creating nightly release for tldr-pages"
+    (
+        git branch -D nightly
+        git checkout --orphan nightly
+        x rmrf "./dist/$version"
+        x mv -f "$HOME/tldr-pages/tmpdir" "./dist/$version"
+        git add .
+        git commit -m "Creating nightly release for tldr-pages"
 
-    #     git push git@gitee.com:x-cmd/tldr   :nightly
-    #     git push git@gitee.com:x-cmd/tldr    nightly
+        git push git@gitee.com:x-cmd/tldr   :nightly
+        git push git@gitee.com:x-cmd/tldr    nightly
 
-    #     git push git@github.com:x-cmd/tldr  :nightly
-    #     git push git@github.com:x-cmd/tldr   nightly
+        git push git@github.com:x-cmd/tldr  :nightly
+        git push git@github.com:x-cmd/tldr   nightly
 
-    #     [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
-    #     x qywx send --markdown  "### 🔔 x-cmd/tldr nightly dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
-    # )
+        # [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
+        # x qywx send --markdown  "### 🔔 x-cmd/tldr nightly dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
+    )
 
 )}
 
