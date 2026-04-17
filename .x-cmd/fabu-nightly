@@ -3,7 +3,6 @@
 action_main(){(
     local version="v2.3"
     x cd "$(x wsroot)" || return
-    x env use 7za
 
     (
 
@@ -37,8 +36,7 @@ action_main(){(
                 x:info x z "$dstfp_xz" "$folder"
                 lang_name="${folder#"pages."}"
                 printf "%s\n" "$lang_name" >> "$langtxt"
-                x cd  "$folder"     || return
-                x z "$dstfp_xz" ./  || return
+                LC_ALL=C command tar -cJf "$dstfp_xz" -C "$folder" . || return 1
                 printf "\n"
             )
 
