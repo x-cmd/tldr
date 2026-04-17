@@ -3,6 +3,7 @@
 action_main(){(
     local version="v2.3"
     x cd "$(x wsroot)" || return
+    x env use 7za
 
     (
 
