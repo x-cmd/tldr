@@ -1,0 +1,52 @@
+# shellcheck shell=dash
+
+action_main(){(
+    x cd "$(x wsroot)" || return
+    local version="${1:?Provide tldr pages version}"
+    local download_fp="tldr-${version#v}"
+    [ -d "$download_fp" ] || {
+        local cache="${version}.tar.gz"
+        local url="https://github.com/tldr-pages/tldr/archive/refs/tags/${cache}"
+        x:info "Download $cache from $url"
+        x curl -L -sS --speed-time 5 --speed-limit 100 "$url" --output "$cache" || {
+            x:error "Fail to download $cache from $url"
+            return 1
+        }
+        x uz "$cache"
+
+    } || return
+
+
+    x cd "$download_fp" || return
+
+    local folder;   local dir; dir="$(x wsroot)/dist/$version"
+    local langtxt="$dir/lang.txt"; local lang_name=""
+    x rmrf "$dir";   x mkdirp "$dir"
+    for folder in pages.*; do
+        local dstfp="${dir}/${folder}.tgz"
+        (
+            # x:info x z "$dstfp" "$folder"
+            lang_name="${folder#"pages."}"
+            printf "%s\n" "$lang_name" >> "$langtxt"
+            x cd  "$folder" || return
+            x z "$dstfp" ./ || return
+            printf "\n"
+        )
+
+    done
+    cp -rf "$dir/pages.en.tgz" "$dir/pages.tgz" || return
+
+    (
+        x cd "$(x wsroot)" || return
+        git add dist
+        git status -s
+        git commit -m "build: :package: release tldr bundle dsit/$version"
+        x ws push
+
+        [ -z "$QYWX_BOT_RELEASE_WEBHOOK" ] || x qywx --cfg "webhook=$QYWX_BOT_RELEASE_WEBHOOK"
+        x qywx send --markdown  "### 🔔 x-cmd/tldr dist/$version 资源包更新成功：[github](https://github.com/x-cmd/tldr) [gitee](https://gitee.com/x-cmd/tldr)"
+    )
+
+)}
+
+action_main "$@"
