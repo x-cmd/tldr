@@ -1,0 +1,11 @@
+
+repo=lang
+x rmrf "$repo"
+x:info "正在下载 x-cmd-tldr/$repo"
+git clone git@github.com:x-cmd-tldr/"$repo" || {
+    x:error "Fail to clone from x-cmd-tldr/$repo"
+    return 1
+}
+
+x cd "$repo"
+x ws fabu
